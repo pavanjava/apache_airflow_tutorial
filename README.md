@@ -11,7 +11,7 @@ go through below document to run the airflow locally.
 
     - AIRFLOW_VERSION=2.1.0
     - pip install "apache-airflow==${AIRFLOW_VERSION}"
-    - pip install 'apache-airflow[postgres]'
+    - pip install 'apache-airflow[postgres]' (optional based on if you want to use postgres as default back end or not)
 
 
 - <b>Note: we will use postgresql for our airflow backend. by default airflow uses "sqllite"</b>
