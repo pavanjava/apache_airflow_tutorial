@@ -13,8 +13,12 @@ go through below document to run the airflow locally.
 - pip install "apache-airflow==${AIRFLOW_VERSION}"
 - pip install 'apache-airflow[postgres]'
 
-Note: we will use postgresql for our airflow backend.
-Note: to point airflow to postgres we need to edit airflow.cfg. 
+
+- <b>Note: we will use postgresql for our airflow backend. by default airflow uses "sqllite"</b>
+- <b>Note: to point airflow to postgres we need to edit airflow.cfg.</b>
+- <b>Note: If you want to use sqllite as your default database and dont want postgres as default backend then ignore the below setps.</b>
+
+
 - navigate to airflow installation directory. 
 - open airflow.cfg in your favaurate editor.
 - search for `sql_alchemy_conn`
