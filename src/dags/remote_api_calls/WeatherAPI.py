@@ -1,11 +1,8 @@
 import json
 import csv
 import requests
-import os
-from dotenv import load_dotenv, find_dotenv
 
-_ = load_dotenv(find_dotenv())
-API_KEY = os.getenv("OPEN_WEATHER_API_KEY")
+API_KEY = "f38c94b357eae713857038d2f1a912cc"
 
 
 def get_geo_codes(city_name, limit=1):
@@ -75,7 +72,7 @@ def get_weather_data(city_name):
         weather_data = json.loads(response.content)
         if weather_data is not None:
             print(weather_data)
-            # create_csv_file(city_name=city_name, data=weather_data)
+            create_csv_file(city_name=city_name, data=weather_data)
     except Exception as e:
         print(e.__cause__)
 
