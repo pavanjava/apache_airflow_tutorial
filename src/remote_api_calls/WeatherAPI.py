@@ -75,7 +75,7 @@ def get_weather_data(city_name):
         weather_data = json.loads(response.content)
         if weather_data is not None:
             print(weather_data)
-            create_csv_file(city_name=city_name, data=weather_data)
+            # create_csv_file(city_name=city_name, data=weather_data)
     except Exception as e:
         print(e.__cause__)
 
