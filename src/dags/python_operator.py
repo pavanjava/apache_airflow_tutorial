@@ -3,7 +3,8 @@ from airflow.operators.python import PythonOperator
 from airflow.operators.bash import BashOperator
 from airflow.utils.dates import datetime
 from datetime import timedelta
-from remote_api_calls.WeatherAPI import get_weather_data
+# from remote_api_calls.WeatherAPI import get_weather_data
+from tasks.SimpleTask import log_data
 
 # These args will get passed on to each operator
 # You can override them on a per-task basis during operator initialization
@@ -19,17 +20,17 @@ args = {
 }
 
 dag = DAG(
-    dag_id='weather_dag_1',
+    dag_id='Simple_Task_DAG',
     default_args=args,
     description='calls weather apis and create csv data file',
-    schedule=timedelta(minutes=1)
+    schedule='*/5 * * * *'  # every 5 mins
 )
 
 task_api_call = PythonOperator(
     task_id='call_api_task_1',
     depends_on_past=False,
-    python_callable=get_weather_data,
-    op_kwargs={'city_name': 'Hyderabad, Telangana, India'},
+    python_callable=log_data,
+    op_kwargs={'data': 'Hyderabad, Telangana, India'},
     dag=dag
 )
 

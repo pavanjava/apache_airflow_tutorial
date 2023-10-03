@@ -72,7 +72,7 @@ def get_weather_data(city_name):
         weather_data = json.loads(response.content)
         if weather_data is not None:
             print(weather_data)
-            create_csv_file(city_name=city_name, data=weather_data)
+            # create_csv_file(city_name=city_name, data=weather_data)
     except Exception as e:
         print(e.__cause__)
 
@@ -99,6 +99,6 @@ def create_csv_file(city_name, data):
         csvfile.flush()
         csvfile.close()
 
-
-if __name__ == "__main__":
-    get_weather_data('Hyderabad, Telangana, India')
+# uncomment if you want to run the code in this file explicitly
+# if __name__ == "__main__":
+#    get_weather_data('Hyderabad, Telangana, India')
