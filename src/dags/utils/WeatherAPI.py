@@ -72,12 +72,14 @@ def get_weather_data(city_name):
         weather_data = json.loads(response.content)
         if weather_data is not None:
             print(weather_data)
-            # create_csv_file(city_name=city_name, data=weather_data)
     except Exception as e:
         print(e.__cause__)
 
 
-def create_csv_file(city_name, data):
+def create_csv_file(ti):
+
+    # pull data from the xcom objects
+    data = ti.xcom_pull(task_ids=["fetch_weather"])[0]
     # field names
     fields = ['Name', 'lat', 'lon', 'weather_desc', 'temperature', 'feels_like', 'temp_min', 'temp_max', 'pressure',
               'humidity', 'visibility', 'wind_speed', 'sunrise', 'sunset']

@@ -1,44 +1,55 @@
-from airflow import DAG
+import json
+
+from airflow.models import DAG
 from airflow.operators.python import PythonOperator
-from airflow.operators.bash import BashOperator
+from airflow.providers.http.operators.http import SimpleHttpOperator
 from airflow.utils.dates import datetime
 from datetime import timedelta
-# from remote_api_calls.WeatherAPI import get_weather_data
-from tasks.SimpleTask import log_data
+from utils.WeatherAPI import create_csv_file
 
-# These args will get passed on to each operator
-# You can override them on a per-task basis during operator initialization
+city_name = "Hyderabad, Telangana, India",
+limit = 1,
+API_KEY = "f38c94b357eae713857038d2f1a912cc"
+
+
 args = {
     'owner': 'airflow_local',
     'depends_on_past': False,
     'start_date': datetime(year=2023, day=1, month=9, hour=0, minute=0, second=0),
-    'email': ['manthapavankumar11@gmail.com'],
-    'email_on_failure': True,
-    'email_on_retry': False,
+    # 'email': ['manthapavankumar11@gmail.com'],
+    # 'email_on_failure': True,
+    # 'email_on_retry': False,
     'retries': 2,
     'retry_delay': timedelta(minutes=2)
 }
 
-dag = DAG(
-    dag_id='Simple_Task_DAG',
-    default_args=args,
-    description='calls weather apis and create csv data file',
-    schedule='*/5 * * * *'  # every 5 mins
-)
+with DAG(
+        dag_id='weather_api_dag',
+        catchup=False,
+        schedule_interval='@daily',
+        default_args=args
+) as dag:
 
-task_api_call = PythonOperator(
-    task_id='call_api_task_1',
-    depends_on_past=False,
-    python_callable=log_data,
-    op_kwargs={'data': 'Hyderabad, Telangana, India'},
-    dag=dag
-)
+    task_fetch_geocodes = SimpleHttpOperator(
+        task_id='fetch_geo_codes',
+        http_conn_id='open_weather_geo_codes',
+        endpoint=f'direct?q=Hyderabad,Telangana&limit=1&appid={API_KEY}',
+        method='GET',
+        response_filter=lambda response: json.loads(response.content),
+        log_response=True
+    )
 
-end_task = BashOperator(
-    task_id='end_task',
-    depends_on_past=False,
-    bash_command='echo workflow finished',
-    dag=dag
-)
+    task_fetch_weather = SimpleHttpOperator(
+        task_id='fetch_weather',
+        http_conn_id='open_weather_data',
+        endpoint='weather?lat={{ti.xcom_pull(task_ids=["fetch_geo_codes"])[0][0].get("lat")}}&lon={{ti.xcom_pull('
+                 'task_ids=["fetch_geo_codes"])[0][0].get("lon")}}&appid=f38c94b357eae713857038d2f1a912cc',
+        method='GET',
+        response_filter=lambda response: json.loads(response.content),
+        log_response=True
+    )
 
-task_api_call >> end_task
+    task_convert_to_csv = PythonOperator(
+        task_id='convert_to_csv',
+        python_callable=create_csv_file
+    )
