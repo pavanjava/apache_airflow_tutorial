@@ -53,3 +53,5 @@ with DAG(
         task_id='convert_to_csv',
         python_callable=create_csv_file
     )
+
+    # task_fetch_geocodes >> task_fetch_weather >> task_convert_to_csv
