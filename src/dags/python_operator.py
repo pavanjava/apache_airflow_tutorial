@@ -9,7 +9,7 @@ from utils.WeatherAPI import create_csv_file
 
 city_name = "Hyderabad, Telangana, India",
 limit = 1,
-API_KEY = "f38c94b357eae713857038d2f1a912cc"
+API_KEY = "<OPEN_WEATHER_API_KEY>"
 
 
 args = {
