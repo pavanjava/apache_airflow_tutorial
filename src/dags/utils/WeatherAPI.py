@@ -2,7 +2,7 @@ import json
 import csv
 import requests
 
-API_KEY = "f38c94b357eae713857038d2f1a912cc"
+API_KEY = "<OpenWeatherAPI_KEY>"
 
 
 def get_geo_codes(city_name, limit=1):
